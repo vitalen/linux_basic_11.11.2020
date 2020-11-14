@@ -1,0 +1,32 @@
+"""
+Управление файлами и каталогами и текстовые редакторы. Создать файл с наполнением, используя несколько способов.
+Использовать разобранные текстовые редакторы для наполнения файлов данными. Создать копии созданных файлов,
+создать несколько каталогов с подкаталогами, перенести несколько файлов в созданные каталоги. Перечислить команды
+и используемые параметры команд.
+"""
+
+cd ~
+touch testfile.txt
+nano testfile.txt
+    Line1
+    Line2
+    Line3
+    Line4
+    ...
+    strg+x
+    y
+
+cat testfile.txt >> testfile3.txt
+cat testfile3.txt
+
+cp testfile3.txt testfile4.txt
+
+tail -f -n 20 testfile4.txt
+less testfile4.txt
+more testfile4.txt
+
+mkdir Filekatalog1
+mkdir Filekatalog1/Filekatalog1_0
+mkdir Filekatalog1/Filekatalog1_0/Filekatalog1_0_0
+
+mv testfile3.txt Filekatalog1/Filekatalog1_0/Filekatalog1_0_0/

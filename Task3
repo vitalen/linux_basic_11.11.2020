@@ -1,0 +1,25 @@
+"""
+Используя дополнительный материал, настроить авторизацию по SSH с использованием ключей.
+"""
+
+mkdir ~/.ssh
+
+ssh-keygen -t rsa
+    -> id_rsa
+    -> id_rsa.pub
+
+
+ssh-copy-id virus@192.168.1.194
+    -> password
+
+sudo nano /etc/ssh/sshd_config
+
+    #Port 22  -> Port 1251
+    PasswordAuthentication yes -> PasswordAuthentication no
+
+
+sudo /etc/init.d/ssh restart
+
+
+
+ssh -i .ssh/ubuntuserver virus@192.168.1.194 -p 1251
