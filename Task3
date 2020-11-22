@@ -1,0 +1,7 @@
+"""
+Создать пользователя с правами суперпользователя. Сделать так, чтобы sudo не требовал пароль для выполнения команд.
+"""
+sudo sudoedit /etc/sudoers
+
+%sudo   ALL=(ALL:ALL) ALL  ->
+%sudo   ALL=(ALL:ALL) NOPASSWD:ALL
