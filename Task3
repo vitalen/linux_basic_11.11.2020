@@ -1,0 +1,25 @@
+Управление процессами.) Изменить конфигурационный файл службы SSH: /etc/ssh/sshd_config,
+отключив аутентификацию по паролю PasswordAuthentication no.
+Выполните рестарт службы systemctl restart sshd (service sshd restart),
+верните аутентификацию по паролю, выполните reload службы systemctl reload sshd (services sshd reload).
+В чём различие между действиями restart и reload?
+Создайте файл при помощи команды cat > file_name, напишите текст и завершите комбинацией ctrl+d.
+Какой сигнал передадим процессу?
+
+sudo nano /etc/ssh/sshd_config
+
+PasswordAuthentication yes -> PasswordAuthentication no
+
+sudo service ssh restart
+OR
+sudo systemctl reload sshd
+
+PasswordAuthentication no -> PasswordAuthentication yes
+
+
+cat /etc/ssh/sshd_config > test03_less4.txt
+
+ctrl-d = EOF -> end of file => SIGTERM ?
+
+RELOAD = перечитать конфигурационный файл службы без остановки процесса.нужен когда остановка процесса не желательна.
+RESTART = перезапуск процесса с чтением конфигурационнного фаила.
