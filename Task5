@@ -1,0 +1,12 @@
+
+# Создать разовое задание на перезагрузку операционной системы, используя at.
+
+echo '#!/bin/bash' >> /home/virus/Lesson6/task_05.sh
+echo 'echo 'REBOOT!'' >> /home/virus/Lesson6/task_05.sh
+echo 'reboot' >> /home/virus/Lesson6/task_05.sh
+
+
+at -f /home/virus/Lesson6/task_05.sh 14:10 11/29/2020
+OR
+echo /home/virus/Lesson6/task_05.sh | at 14:16
+
