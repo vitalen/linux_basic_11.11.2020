@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Создать директорию, в которой есть несколько файлов.
+# Сделать так, чтобы открыть файлы можно было, только зная имя файла, а через ls список файлов посмотреть было нельзя.
+
+cd Lesson5
+mkdir Task7
+cd Task7
+echo 'Hello World!' > task7_01.txt
+#ls -l ./Task7/
+#echo 'text' >> Task7/task7_01.txt
+#cat Task7/task7_01.txt
+
+chmod ugo-r Task7
+cat Task7/task7_01.txt

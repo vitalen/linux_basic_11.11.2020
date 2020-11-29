@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Создать группу developer и нескольких пользователей, входящих в неё.
+# Создать директорию для совместной работы.
+# Сделать так, чтобы созданные одними пользователями файлы могли изменять другие пользователи этой группы.
+
+sudo groupadd developer
+sudo useradd -m -s /bin/bash dev_01
+sudo useradd -m -s /bin/bash dev_02
+sudo passwd dev_01
+sudo passwd dev_02
+
+sudo usermod -aG developer dev_01
+sudo usermod -aG developer dev_02
+
+mkdir project
+sudo chgrp developer project
+sudo chmod g+s project

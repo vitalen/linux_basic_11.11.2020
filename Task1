@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Создать файл file1 и наполнить его произвольным содержимым. Скопировать его в file2.
+# Создать символическую ссылку file3 на file1. Создать жёсткую ссылку file4 на file1.
+# Посмотреть, какие inode у файлов. Удалить file1. Что стало с остальными созданными файлами?
+# Попробовать вывести их на экран.
+
+mkdir Lesson5
+cd Lesson5
+echo 'Simple Example' > file1
+cp file1 file2
+ln -s file1 file3
+ln file1 file4
+
+# rm file1
+# cat file2
+# cat file3 ---> Error, da die Datei entfernt wurde
+# cat file4
