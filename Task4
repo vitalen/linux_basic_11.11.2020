@@ -1,0 +1,8 @@
+"""
+Создать пользователя, обладающего возможностью выполнять действия от имени суперпользователя.
+"""
+
+sudo useradd -m -s /bin/bash dev_new
+sudo passwd dev_new
+sudo sudoedit /etc/sudoers
+%dev_new ALL=(ALL) ALL=(ALL:ALL) NOPASSWD:ALL
