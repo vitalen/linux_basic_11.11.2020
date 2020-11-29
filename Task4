@@ -1,0 +1,3 @@
+# Используя grep, проанализировать файл /var/log/syslog, отобрав события на своё усмотрение.
+
+cat /var/log/syslog | grep -i 'cron'

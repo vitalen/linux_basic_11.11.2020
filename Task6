@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Написать скрипт, делающий архивную копию каталога etc, и прописать задание в crontab.
+
+nano task_06.sh
+
+#!/bin/bash
+
+DATE=$(date +%Y-%m-%d-%H%M%S)
+BACKUP_DIR="/home/virus/Lesson6"
+SOURCE="/etc/*"
+tar -cvzpf $BACKUP_DIR/backup-$DATE.tar.gz $SOURCE
+
+
+
+crontab -e
+40 15 * * 0 /home/virus/Lesson6/task_06.sh
