@@ -1,0 +1,15 @@
+# Запустить контейнер с Ubuntu.
+
+sudo usermod -aG virus docker
+
+docker search ubuntu
+
+docker pull ubuntu
+
+docker ps -a
+=> [c7e177328fc9]
+
+docker start c7e177328fc9
+
+docker exec -ti c7e177328fc9 bash
+

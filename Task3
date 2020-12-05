@@ -1,0 +1,138 @@
+# * Используя Dockerfile, собрать связку nginx + PHP-FPM в одном контейнере
+
+# Подготовить вспомогательные файлы [default, start.sh, supervisord.conf]
+
+sudo nano default
+
+# Файл со следующим содержимым:.......
+# ===============================================================
+server {
+    listen 80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+    }
+}
+# ===============================================================
+
+
+
+sudo nano start.sh
+
+# Файл со следующим содержимым:.......
+# ===============================================================
+#!/bin/sh
+/usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
+# ===============================================================
+
+
+
+sudo nano supervisord.conf
+# Файл со следующим содержимым:.......
+# ===============================================================
+[unix_http_server]
+file=/dev/shm/supervisor.sock   ; (the path to the socket file)
+
+[supervisord]
+logfile=/var/log/supervisord.log ; (main log file;default $CWD/supervisord.log)
+logfile_maxbytes=50MB        ; (max main logfile bytes b4 rotation;default 50MB)
+logfile_backups=10           ; (num of main logfile rotation backups;default 10)
+loglevel=info                ; (log level;default info; others: debug,warn,trace)
+pidfile=/tmp/supervisord.pid ; (supervisord pidfile;default supervisord.pid)
+nodaemon=false               ; (start in foreground if true;default false)
+minfds=1024                  ; (min. avail startup file descriptors;default 1024)
+minprocs=200                 ; (min. avail process descriptors;default 200)
+user=root             ;
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+[supervisorctl]
+serverurl=unix:///dev/shm/supervisor.sock ; use a unix:// URL  for a unix socket
+
+[include]
+files = /etc/supervisor/conf.d/*.conf
+
+[program:php-fpm7.4]
+command=/usr/sbin/php-fpm7.4 -F
+numprocs=1
+autostart=true
+autorestart=true
+
+[program:nginx]
+command=/usr/sbin/nginx
+numprocs=1
+autostart=true
+autorestart=true
+# ===============================================================
+
+
+
+# Готово, теперь можно и Dockerfile создать
+sudo nano Dockerfile
+# Файл со следующим содержимым:.......
+# ===============================================================
+# ubuntu 20.04
+FROM ubuntu:20.04
+
+# LABEL about the custom image
+LABEL maintainer="virus@virus.ru"
+LABEL version="0.1"
+LABEL description="Cвязку nginx + PHP-FPM в одном контейнере"
+
+# Disable Prompt During Packages Installation
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Update Ubuntu Software repository
+# новая версия NGINX к сожалению по конфигурации не заработала
+#RUN apt update
+#RUN apt install -y curl gnupg gnupg2 gnupg1
+#RUN echo "deb http://nginx.org/packages/mainline/ubuntu focal nginx" \
+#    | tee /etc/apt/sources.list.d/nginx.list
+#RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add -
+
+RUN apt update
+# Install nginx, php-fpm and supervisord from ubuntu repository
+RUN apt install -y nginx php-fpm supervisor && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt clean
+
+# Define the ENV variable
+ENV nginx_vhost /etc/nginx/sites-available/default
+ENV php_conf /etc/php/7.4/fpm/php.ini
+ENV nginx_conf /etc/nginx/nginx.conf
+ENV supervisor_conf /etc/supervisor/supervisord.conf
+
+# Enable PHP-fpm on nginx virtualhost configuration
+COPY default ${nginx_vhost}
+RUN sed -i -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' ${php_conf} && \
+    echo "\ndaemon off;" >> ${nginx_conf}
+
+# Copy supervisor configuration
+COPY supervisord.conf ${supervisor_conf}
+RUN mkdir -p /var/www/html
+RUN mkdir -p /run/php && \
+    chown -R www-data:www-data /var/www/html && \
+    chown -R www-data:www-data /run/php
+
+# Volume configuration
+VOLUME ["/etc/nginx/sites-enabled", "/etc/nginx/certs", "/etc/nginx/conf.d", "/var/log/nginx", "/var/www/html"]
+
+# Copy start.sh script and define default command for the container
+COPY start.sh /start.sh
+CMD ["./start.sh"]
+
+# Expose Port for the Application
+EXPOSE 80 443
+
+# ===============================================================
